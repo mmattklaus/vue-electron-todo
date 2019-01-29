@@ -4,7 +4,7 @@
                  @close="closeCroppie" @cropped="cropped"></croppie>
         <div class="ui two column centered grid">
             <div class="column">
-                <form class="ui form">
+                <form class="ui form raised segment">
                     <form-message :options="error"></form-message>
                     <div class="field">
                         <label>Name
@@ -136,6 +136,7 @@
       },
       closeCroppie () {
         this.croppie = ''
+        this.original = ''
       },
       cropped (url) {
         this.data.cover = url

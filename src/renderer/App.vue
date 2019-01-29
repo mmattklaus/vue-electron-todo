@@ -1,57 +1,74 @@
 <template>
-    <div id="app">
-        <div class="ui mini top fixed borderless menu">
-            <div class="ui container">
-                <router-link :to="{name: 'landing-page'}" class="item">
-                    <img class="logo" src="~@/assets/logo.png"> &nbsp;
-                </router-link>
-                <div class="item">
-                    <router-link tag="div" :to="{name: 'page-boards'}" v-show="loggedIn" class="ui button" tabindex="0">
+    <el-container>
+        <div id="app" class="app" :style="style">
+            <div class="ui mini top fixed borderless menu">
+                <div class="ui container">
+                    <router-link :to="{name: 'landing-page'}" class="item">
+                        <img class="logo" src="~@/assets/logo.png"> &nbsp;
+                    </router-link>
+                    <!--<div class="">-->
+                    <router-link :to="{name: 'page-boards'}" v-show="loggedIn" class="item">
                         Boards
                     </router-link>
-                </div>
-                <div class="item">
-                    <router-link tag="div" :to="{name: 'create-board'}" v-show="loggedIn" class="ui button icon" tabindex="0">
+                    <!--</div>-->
+                    <!--<div class="">-->
+                    <router-link :to="{name: 'create-board'}" v-show="loggedIn" class="item">
                         Board <i class="icon plus"></i>
                     </router-link>
+                    <!--</div>-->
+                    <div class="right menu">
+                        <!--<div class="item">-->
+                        <!--<div class="ui icon input">-->
+                        <!--<input type="text" placeholder="Search...">-->
+                        <!--<i class="search link icon"></i>-->
+                        <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="ui">-->
+                        <router-link v-show="!loggedIn" :to="{name: 'register-page'}" class="item">Sign up</router-link>
+                        <!--</div>-->
+                        <!--<div class="item">-->
+                        <router-link v-show="!loggedIn" :to="{name: 'login-page'}" class="item">Log-in</router-link>
+                        <!--</div>-->
+                        <!--<div class="item">-->
+                        <router-link v-show="loggedIn" :to="{name: 'page-settings'}" class="item">Setting</router-link>
+                        <!--</div>-->
+                        <!--<div class="item">-->
+                        <div v-show="loggedIn" @click="logout" :to="{name: 'login-page'}" class="item">Logout</div>
+                        <!--</div>-->
+                        <div class="ui dropdown item">
+                            Categories
+                            <i class="dropdown icon"></i>
+                            <div class="menu">
+                                <a class="item">Electronics</a>
+                                <a class="item">Automotive</a>
+                                <a class="item">Home</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="right menu">
-                    <!--<div class="item">
-                        <div class="ui icon input">
-                            <input type="text" placeholder="Search...">
-                            <i class="search link icon"></i>
+            </div>
+            <div class="ui main container" style="padding-top: 90px!important;">
+                <div class="ui grid">
+                    <!--<div class="row">
+                        <div class="ui buttons left floated">
+                            <button class="ui button icon" @click.prevent="goBack()"><i class="icon angle left"></i></button>
+                            <div class="or" data-text=""></div>
+                            <button class="ui positive button icon" @click.prevent="goForward()"><i class="icon angle right"></i></button>
                         </div>
                     </div>-->
-                    <div class="ui item" v-show="!loggedIn">
-                        <router-link :to="{name: 'register-page'}" class="ui primary button">Sign up</router-link>
-                    </div>
-                    <div class="item" v-show="!loggedIn">
-                        <router-link :to="{name: 'login-page'}" class="ui button mini">Log-in</router-link>
-                    </div>
-                    <div class="item" v-show="loggedIn">
-                        <button @click="logout" :to="{name: 'login-page'}" class="ui button orange">Logout</button>
+                    <div class="sixteen wide column">
+                        <el-main>
+                            <transition name="bounce" enter-active-class="bounceInLeft"
+                                        leave-active-class="bounceOutRight" :duration="{ enter: 2000, leave: 0 }">
+                                <router-view @authenticated="changeLoginState"></router-view>
+                            </transition>
+                        </el-main>
+
                     </div>
                 </div>
             </div>
         </div>
-        <div class="ui main container" style="padding-top: 90px!important;">
-            <div class="ui grid">
-                <!--<div class="row">
-                    <div class="ui buttons left floated">
-                        <button class="ui button icon" @click.prevent="goBack()"><i class="icon angle left"></i></button>
-                        <div class="or" data-text=""></div>
-                        <button class="ui positive button icon" @click.prevent="goForward()"><i class="icon angle right"></i></button>
-                    </div>
-                </div>-->
-                <div class="sixteen wide column">
-                    <transition name="bounce" enter-active-class="bounceInLeft"
-                                leave-active-class="bounceOutRight" :duration="{ enter: 800, leave: 200 }">
-                        <router-view @authenticated="changeLoginState"></router-view>
-                    </transition>
-                </div>
-            </div>
-        </div>
-    </div>
+    </el-container>
 </template>
 
 <script>
@@ -60,7 +77,10 @@
     data () {
       return {
         transition: '',
-        loggedIn: false
+        loggedIn: false,
+        style: {
+          'background-image': `url(/static/images/backgrounds/default.jpg)`
+        }
       }
     },
     methods: {
@@ -71,7 +91,7 @@
         this.$storage.remove('auth', (err) => {
           if (err) throw err
           this.loggedIn = false
-          this.$router.push({name: 'landing-page'})
+          this.$router.push({name: 'login-page'})
         })
       },
       goBack () {
@@ -82,6 +102,14 @@
       },
       goForward () {
         this.$router.go(1)
+      },
+      setBackground () {
+      /* console.log(this.$$('#app').length)
+           let url = '/static/images/backgrounds/default.jpg'
+           this.bg.backgroundImage = url
+           this.$$('#app')
+           .css({backgroundImage: `url(${url})`})
+           .addClass('app') */
       }
     },
     watch: {
@@ -90,6 +118,9 @@
         const fromDepth = from.path.split('/').length
         this.transition = toDepth < fromDepth ? 'bounceOutRight' : 'bounceInLeft'
       }
+    },
+    created () {
+      this.setBackground()
     },
     mounted () {
       this.getUser()
@@ -101,5 +132,37 @@
 </script>
 
 <style>
-    /* CSS */
+    .app {
+        background-size: cover;
+        overflow: auto !important;
+        height: 100vh;
+        width: 100vw;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
+        position: absolute;
+    }
+    .el-main {
+        padding: 0;
+    }
+
+    .ui.cards {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        margin: 0!important;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+
+    .router-link-active {
+        font-size: 12px;
+        color:  #ef7100!important;
+    }
+
+    .primary-color {
+        color: #ef7100!important;
+    }
 </style>

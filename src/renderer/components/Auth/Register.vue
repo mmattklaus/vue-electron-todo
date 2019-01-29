@@ -1,8 +1,9 @@
+<script src="../../main.js"></script>
 <template>
     <div class="ui grid" id="login_main">
         <div class="three wide column"></div>
         <div class="ten wide column">
-            <form class="ui form">
+            <form class="ui form raised segment">
                 <div class="field">
                     <form-message :options="error"></form-message>
                 </div>

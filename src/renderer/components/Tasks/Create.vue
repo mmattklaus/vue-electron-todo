@@ -1,8 +1,10 @@
 <template>
     <div class="ui grid">
-        <div class="ten wide column">
+        <div class="eleven wide column">
             <notification :option="error"></notification>
             <form class="ui raised form segment">
+                <h1 style="text-align: center; color: #9c6f04">Create new task</h1>
+                <hr>
                 <div class="two fields">
                     <div class="field">
                         <label>Name
@@ -35,7 +37,7 @@
                                     :picker-options="pickerOptions1">
                             </el-date-picker>
                         </div>
-                        <div class="field" :style="{display: data.allDay == 1? 'none':'inline'}">
+                        <div class="field" v-show="data.allDay !== true">
                             <el-time-picker
                                     class="timepicker"
                                     v-model="data.start_date.time"
@@ -62,7 +64,7 @@
                                     :picker-options="pickerOptions1">
                             </el-date-picker>
                         </div>
-                        <div class="field" :style="{display: data.allDay == 1? 'none':'inline'}">
+                        <div class="field" v-show="data.allDay !== true">
                             <el-time-picker
                                     class="timepicker"
                                     v-model="data.end_date.time"
@@ -79,10 +81,15 @@
                     </div>
                 </div>
                 <br>
-                <div @click.prevent="validateInput" class="ui submit button right floated purple">Register</div>
+                <router-link v-if="boardId" :to="{name: 'page-events', params: {id: boardId}}" tag="div"
+                             class="ui purple button icon"><i class="icon arrow left"></i> Tasks
+                </router-link>
+                <div @click.prevent="validateInput" class="ui submit button right floated purple icon">
+                    Register <i class="icon save"></i>
+                </div>
             </form>
         </div>
-        <div class="four wide column">
+        <div class="three wide column">
             <form class="ui form">
                 <h4 class="ui dividing header">Reminder</h4>
                 <div class="field">
@@ -109,11 +116,13 @@
   import Required from '../Library/Required'
   import FormMessage from '../Library/FormMessage'
   import Notification from '../Library/Notification'
+
   export default {
     components: {
       Notification,
       FormMessage,
-      Required},
+      Required
+    },
     name: 'create-todo',
     data () {
       return {
@@ -128,17 +137,17 @@
               picker.$emit('pick', new Date())
             }
           }, {
-            text: 'Yesterday',
+            text: 'Tomorrow',
             onClick (picker) {
               const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24)
+              date.setTime(date.getTime() + 3600 * 1000 * 24)
               picker.$emit('pick', date)
             }
           }, {
-            text: 'A week ago',
+            text: 'Next week',
             onClick (picker) {
               const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+              date.setTime(date.getTime() + 3600 * 1000 * 24 * 7)
               picker.$emit('pick', date)
             }
           }]
@@ -147,8 +156,8 @@
           name: '',
           location: '',
           description: '',
-          start_date: {date: '', time: this.$moment().add(1, 'hours').format('LTS')},
-          end_date: {date: '', time: ''},
+          start_date: {date: '', time: '00:01:00 AM'}, // this.$moment().add(1, 'hours').format('LTS')
+          end_date: {date: '', time: '23:59:00 PM'},
           allDay: false,
           reminder: {type: 'm', amount: 10}
         },
@@ -169,19 +178,25 @@
       }
     },
     watch: {
-      'data.allDay': (value) => {
+      'data.allDay' (value) {
+        if (value) {
+          if (!this.data.end_date.date && this.data.start_date.date) {
+            this.data.end_date.date = this.data.start_date.date
+          }
+        }
       },
       'data.end_date.date' (value) {
         this.computeEndDate(value)
       },
       'data.end_date.time' (value) {
-        this.computeEndDate(value)
+        // this.computeEndDate(value)
       },
       'data.start_date.date' (value, old) {
         this.computeStartDate(value)
       },
       'data.start_date.time' (value, old) {
-        this.computeStartDate(value)
+        console.log(value)
+        // this.computeStartDate(value)
       },
       'data.name' (value, old) {
         this.savable.name = value || old
@@ -202,13 +217,21 @@
     computed: {},
     methods: {
       computeStartDate (value) {
-        let time = this.data.allDay ? this.$moment('23:59:59 PM', 'HH:mm:ss A') : this.$moment(this.data.start_date.time, 'HH:mm:ss A')
+        console.log(this.data.start_date.time)
+        if (!this.data.start_date.time) { // Set start time to 1min after 12am, if not already specified
+          this.data.start_date.time = '00:01:00 AM'
+        }
+        let time = this.data.allDay ? this.$moment('23:59:59 PM', 'HH:mm:ss A')
+          : this.$moment(this.data.start_date.time, 'HH:mm:ss A')
         let seconds = time.seconds()
         let minutes = time.minutes()
         let hours = time.hours()
         this.savable.start_date = this.$moment(value, 'x').add({seconds, minutes, hours}).format('x')
       },
       computeEndDate (value) {
+        if (!this.data.end_date.time) { // Set start time to 59min after 11pm, if not already specified
+          this.data.end_date.time = '23:59:00 PM'
+        }
         let time = this.data.allDay ? this.$moment('23:59:59 PM', 'HH:mm:ss A')
           : this.$moment(this.data.end_date.time, 'HH:mm:ss A')
         let seconds = time.seconds()
@@ -240,7 +263,8 @@
           end: this.savable.end_date,
           location: this.savable.location,
           done: false,
-          params: {ongoing: false},
+          status: -1, // -1 => untouched, 0 => in progress, 1 => completed
+          params: {},
           userId: user._id,
           boardId: this.boardId,
           reminder: this.savable.reminder
@@ -253,7 +277,7 @@
         })
       },
       resolveReminderDurationToSeconds (m) {
-        let due = 10 * 60
+        let due = 10 * 60 // Ten minutes before time
         switch (m) {
           case 's':
             due = 1
@@ -271,7 +295,6 @@
         return due
       },
       errorStatus (status, message) {
-        console.log(status, message)
         this.error.status = status
         this.error.message = message
       },
@@ -279,6 +302,7 @@
         if (this.$refs[ref]) {
           this.$refs[ref].focus()
         }
+        return false
       }
     },
     mounted () {

@@ -2,13 +2,15 @@
     <div class="ui grid" id="login_main">
         <div class="three wide column"></div>
         <div class="ten wide column">
-            <form class="ui form">
-                <form-message :options="{type: 'error', status: error, message: 'Invalid login credentials'}"></form-message>
+            <form class="ui form raised segment">
+                <form-message
+                        :options="{type: 'error', status: error, message: 'Invalid login credentials'}"></form-message>
                 <div class="field">
                     <label>Username
                         <required></required>
                     </label>
-                    <input :class="{invalid: error}" @keyup="error = false" v-model="username" type="text" ref="username" placeholder="username">
+                    <input :class="{invalid: error}" @keyup="error = false" v-model="username" type="text"
+                           ref="username" placeholder="username">
                 </div>
                 <div class="field">
                     <label>Password
@@ -34,7 +36,8 @@
   export default {
     components: {
       FormMessage,
-      Required},
+      Required
+    },
     data () {
       return {
         username: null,
@@ -76,7 +79,8 @@
     #login_main {
         padding-top: 50px;
     }
+
     input.invalid {
-        border-color: #e97a26!important;
+        border-color: #e97a26 !important;
     }
 </style>

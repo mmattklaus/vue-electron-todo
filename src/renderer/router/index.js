@@ -36,10 +36,10 @@ export default new Router({
     {
       path: 'boards/:id/events',
       name: 'page-events',
-      component: require('@/components/Tasks/Index').default,
+      component: require('@/components/Tasks/Tasks').default,
       meta: {
         forAuth: true,
-        title: 'Events'
+        title: 'Tasks'
       }
     },
     {
@@ -48,8 +48,37 @@ export default new Router({
       component: require('@/components/Tasks/Create').default,
       meta: {
         forAuth: true,
-        title: 'Create Event'
+        title: 'Create Task'
       }
+    },
+    {
+      path: '/settings',
+      name: 'page-settings',
+      component: require('@/components/Settings/Index').default,
+      meta: {
+        forAuth: true,
+        title: 'Settings'
+      },
+      children: [
+        {
+          path: 'background',
+          name: 'settings-background',
+          component: require('@/components/Settings/Sections/Background').default,
+          meta: {
+            forAuth: true,
+            title: 'Settings'
+          }
+        },
+        {
+          path: 'display',
+          name: 'settings-display',
+          component: require('@/components/Settings/Sections/Display').default,
+          meta: {
+            forAuth: true,
+            title: 'Settings'
+          }
+        }
+      ]
     },
     {
       path: 'login',

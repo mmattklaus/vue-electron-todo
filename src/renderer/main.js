@@ -5,16 +5,31 @@ import moment from 'moment'
 import db from './datastore'
 import router from './router'
 import VCalendar from 'v-calendar'
-import { Notification, MessageBox, DatePicker, TimePicker } from 'element-ui'
+import {
+  Notification,
+  MessageBox,
+  DatePicker,
+  TimePicker,
+  ColorPicker,
+  Container,
+  Aside,
+  Main,
+  Header,
+  Col,
+  Row,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu
+} from 'element-ui'
 import SuiVue from 'semantic-ui-vue'
 import VueCroppie from 'vue-croppie'
 import 'v-calendar/lib/v-calendar.min.css'
 import VueElectronJSONStorage from 'vue-electron-json-storage'
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
+import $ from 'jquery'
 
 locale.use(lang)
-
 require('vue2-animate/dist/vue2-animate.min.css')
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
@@ -31,6 +46,7 @@ Vue.use(DatePicker)
 Vue.use(TimePicker)
 
 Vue.prototype.$db = db
+Vue.prototype.$$ = $
 Vue.prototype.$moment = moment
 Vue.prototype.$warn = Notification.warning
 Vue.prototype.$err = Notification.error
@@ -38,6 +54,16 @@ Vue.prototype.$success = Notification.success
 Vue.prototype.$info = Notification.info
 Vue.prototype.$confirm = MessageBox.confirm
 
+Vue.component('color-picker', ColorPicker)
+Vue.component('el-container', Container)
+Vue.component('el-aside', Aside)
+Vue.component('el-main', Main)
+Vue.component('el-header', Header)
+Vue.component('el-col', Col)
+Vue.component('el-row', Row)
+Vue.component('el-dropdown', Dropdown)
+Vue.component('el-dropdown-item', DropdownItem)
+Vue.component('el-dropdown-menu', DropdownMenu)
 Vue.component('required', require('./components/Library/Required.vue'))
 
 const storage = require('electron-json-storage')
@@ -137,7 +163,7 @@ Vue.mixin({
     },
     async fetchBoards (userId) {
       return new Promise((resolve, reject) => {
-        this.$db.boards.find({userId: userId}).sort({createdAt: -1}).exec((err, boards) => {
+        this.$db.boards.find({userId}).sort({createdAt: -1}).exec((err, boards) => {
           if (err) reject(err)
           resolve(boards)
         })
