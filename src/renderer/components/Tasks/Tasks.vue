@@ -39,7 +39,7 @@
         </div>
         <div class="four wide column">
             <board-background v-if="backgroundActive" :open="backgroundActive"
-                              @close="toggleBackground()"></board-background>
+                              @close="toggleBackground()" @done="handleImageSelection"></board-background>
             <div class="row">
                 <router-link :to="{name: 'page-create-event', params: {board: board._id}}"
                              class="ui button positive icon">Create <i
@@ -93,6 +93,10 @@
     },
     computed: {},
     methods: {
+      handleImageSelection (url) {
+        console.log(url)
+        this.backgroundActive = false
+      },
       toggleBackground () {
         this.backgroundActive = !this.backgroundActive
       },

@@ -3,6 +3,9 @@
         <div class="ui grid">
             <div class="five wide column">
                 <div class="ui vertical pointing menu">
+                    <router-link :to="{name: 'settings-profile'}" class="item">
+                        Profile
+                    </router-link>
                     <router-link :to="{name: 'settings-background'}" class="item">
                         Background
                     </router-link>

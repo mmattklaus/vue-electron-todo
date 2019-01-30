@@ -4,10 +4,8 @@
             <sui-modal-header class="center">Crop photo</sui-modal-header>
             <sui-modal-content>
                 <sui-modal-description>
-
                     <div class="ui grid">
                         <div class="ten wide column">
-                            <!--<vue-croppie :viewport="{ width: dimension.width, height: dimension.height, type: 'square' }" ref="croppable"></vue-croppie>-->
                             <vue-croppie
                                     :viewport="{ width: dimension.width, height: dimension.height, type: 'square' }"
                                     :enableOrientation="true"
@@ -16,7 +14,7 @@
                         </div>
                         <div class="six wide column">
                             <div class="row">
-                                <button @click.prevent="close" class="ui button fluid">
+                                <button @click.prevent="close" class="ui button fluid red">
                                     Cancel <i class="close icon"></i>
                                 </button>
                                 <br>

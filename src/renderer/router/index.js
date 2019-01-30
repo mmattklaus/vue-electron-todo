@@ -77,6 +77,15 @@ export default new Router({
             forAuth: true,
             title: 'Settings'
           }
+        },
+        {
+          path: 'profile',
+          name: 'settings-profile',
+          component: require('@/components/Settings/Sections/Profile').default,
+          meta: {
+            forAuth: true,
+            title: 'Profile'
+          }
         }
       ]
     },

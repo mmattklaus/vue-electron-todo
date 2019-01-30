@@ -2,9 +2,8 @@
     <div class="">
         <el-row style="text-align: right;">
             <el-col :span="23">
-                Sort:
                 <el-dropdown size="medium" split-button type="primary" @click="reorderSort" @command="sortBoards">
-                    <i :class="sortOrderIcon"></i> sortType
+                    <i :class="sortOrderIcon"></i> {{ sortTypes.find(type => type.value === this.sortType).text }}
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item v-for="opt in sortTypes" :command="opt.value">
                             <i :class="opt.icon" class="icon"></i> {{ opt.text }}
@@ -120,6 +119,7 @@
           boards.reverse()
         }
         this.sortedBoards = boards
+        this.sortType = type
       },
       reorderSort () {
         this.sortOrder = !this.sortOrder

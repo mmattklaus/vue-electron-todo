@@ -3,8 +3,8 @@
         <div id="app" class="app" :style="style">
             <div class="ui mini top fixed borderless menu">
                 <div class="ui container">
-                    <router-link :to="{name: 'landing-page'}" class="item">
-                        <img class="logo" src="~@/assets/logo.png"> &nbsp;
+                    <router-link :to="{name: 'landing-page'}" class="item logo-container">
+                        <img class="logo" src="~@/assets/logo.jpeg"> &nbsp;
                     </router-link>
                     <!--<div class="">-->
                     <router-link :to="{name: 'page-boards'}" v-show="loggedIn" class="item">
@@ -35,14 +35,16 @@
                         <!--<div class="item">-->
                         <div v-show="loggedIn" @click="logout" :to="{name: 'login-page'}" class="item">Logout</div>
                         <!--</div>-->
-                        <div class="ui dropdown item">
-                            Categories
-                            <i class="dropdown icon"></i>
-                            <div class="menu">
-                                <a class="item">Electronics</a>
-                                <a class="item">Automotive</a>
-                                <a class="item">Home</a>
-                            </div>
+                        <div v-show="loggedIn" class="item">
+                            <el-dropdown size="medium">
+                                <span class="el-dropdown-link primary-color">
+                                    @{{ auth.username }} <i class="el-icon-arrow-down el-icon--right"></i>
+                                </span>
+                                <!--<el-dropdown-menu slot="dropdown" :span="53">
+                                    <el-dropdown-item>Setting <i class="fa fa-user"></i></el-dropdown-item>
+                                    <el-dropdown-item divided><i class="fa fa-user"></i>Logout</el-dropdown-item>
+                                </el-dropdown-menu>-->
+                            </el-dropdown>
                         </div>
                     </div>
                 </div>
@@ -57,7 +59,7 @@
                         </div>
                     </div>-->
                     <div class="sixteen wide column">
-                        <el-main>
+                        <el-main >
                             <transition name="bounce" enter-active-class="bounceInLeft"
                                         leave-active-class="bounceOutRight" :duration="{ enter: 2000, leave: 0 }">
                                 <router-view @authenticated="changeLoginState"></router-view>
@@ -78,6 +80,7 @@
       return {
         transition: '',
         loggedIn: false,
+        auth: {},
         style: {
           'background-image': `url(/static/images/backgrounds/default.jpg)`
         }
@@ -102,14 +105,6 @@
       },
       goForward () {
         this.$router.go(1)
-      },
-      setBackground () {
-      /* console.log(this.$$('#app').length)
-           let url = '/static/images/backgrounds/default.jpg'
-           this.bg.backgroundImage = url
-           this.$$('#app')
-           .css({backgroundImage: `url(${url})`})
-           .addClass('app') */
       }
     },
     watch: {
@@ -119,12 +114,10 @@
         this.transition = toDepth < fromDepth ? 'bounceOutRight' : 'bounceInLeft'
       }
     },
-    created () {
-      this.setBackground()
-    },
     mounted () {
       this.getUser()
         .then(auth => {
+          this.auth = auth
           this.loggedIn = !!auth.username
         })
     }
@@ -132,6 +125,10 @@
 </script>
 
 <style>
+    .logo {
+        width: 120px;
+        padding-right: 12px;
+    }
     .app {
         background-size: cover;
         overflow: auto !important;
@@ -146,6 +143,7 @@
     }
     .el-main {
         padding: 0;
+        overflow: visible;
     }
 
     .ui.cards {
@@ -164,5 +162,9 @@
 
     .primary-color {
         color: #ef7100!important;
+    }
+    
+    .centered {
+        text-align: center;
     }
 </style>

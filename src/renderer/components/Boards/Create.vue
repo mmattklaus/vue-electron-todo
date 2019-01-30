@@ -10,7 +10,7 @@
                         <label>Name
                             <required></required>
                         </label>
-                        <input v-model="data.name" type="text" name="name" placeholder="board name...">
+                        <input autofocus v-model="data.name" type="text" name="name" placeholder="board name...">
                     </div>
                     <div class="field">
                         <label>Description
@@ -22,15 +22,15 @@
                         <label>Background
                             <required></required>
                         </label>
-                        <label class="bg-drop-zone" @click.prevent="">
-                            <i class="icon plus" v-if="!data.cover"></i>
-                            <img :src="data.cover" v-if="data.cover" @click="browseImage()" alt="Background">
+                        <label class="bg-drop-zone" @click.prevent="" @click="browseImage()">
+                            <i class="icon plus add-icon"></i>
+                            <img :src="data.cover" v-if="data.cover" alt="Background">
                         </label>
                         <div>
                             <input type="file" style="display: none;" ref="browseImage" @change="loadBrowsedImage">
                             <button class="ui button icon mini" @click="browseImage" type="button">Browse <i
                                     class="icon computer"></i></button>
-                            <button class="ui button right floated icon mini" type="button">Online <i
+                            <button class="ui button right floated icon mini" @click="browseOnlineImage" type="button">Online <i
                                     class="icon globe"></i></button>
                         </div>
                     </div>
@@ -39,6 +39,8 @@
                         Save Board
                     </button>
                 </form>
+                <board-background v-if="onlineActive" :open="onlineActive"
+                                  @close="onlineActive = false" @done="loadOnlineImage"></board-background>
             </div>
         </div>
     </div>
@@ -47,11 +49,13 @@
   import Required from '../Library/Required'
   import Croppie from '../Library/Croppie'
   import FormMessage from '../Library/FormMessage'
+  import BoardBackground from '../Boards/Modals/Background'
   export default {
     components: {
       FormMessage,
       Croppie,
-      Required
+      Required,
+      BoardBackground
     },
     name: 'create-board',
     data () {
@@ -63,6 +67,7 @@
         },
         original: '',
         croppie: '',
+        onlineActive: false,
         user: {},
         error: {
           status: false,
@@ -119,6 +124,15 @@
           reader.readAsDataURL(input.files[0])
         }
       },
+      browseOnlineImage () {
+        this.onlineActive = true
+      },
+      loadOnlineImage (url) {
+        setTimeout(() => {
+          this.onlineActive = false
+        }, 2000)
+        this.croppie = this.original = url
+      },
       uploadFile () {
         return new Promise((resolve, reject) => {
           let shell = require('shelljs')
@@ -162,6 +176,12 @@
         content: normal;
         text-align: center;
         cursor: pointer;
+    }
+
+    .add-icon {
+        position: fixed;
+        left: 50%;
+        color: red;
     }
 
     .bg-drop-zone:hover {

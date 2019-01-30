@@ -1,4 +1,3 @@
-<script src="../../main.js"></script>
 <template>
     <div class="ui grid" id="login_main">
         <div class="three wide column"></div>
@@ -31,6 +30,7 @@
 </template>
 <script>
   import FormMessage from '../Library/FormMessage'
+
   export default {
     components: {FormMessage},
     data () {

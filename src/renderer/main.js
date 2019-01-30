@@ -18,8 +18,8 @@ import {
   Col,
   Row,
   Dropdown,
-  DropdownItem,
-  DropdownMenu
+  DropdownItem, Form, FormItem, Dialog, ButtonGroup,
+  DropdownMenu, Option, Input, Button, Select, Loading
 } from 'element-ui'
 import SuiVue from 'semantic-ui-vue'
 import VueCroppie from 'vue-croppie'
@@ -44,6 +44,7 @@ Vue.use(VCalendar, {
 Vue.use(VueCroppie)
 Vue.use(DatePicker)
 Vue.use(TimePicker)
+Vue.use(Loading.directive)
 
 Vue.prototype.$db = db
 Vue.prototype.$$ = $
@@ -60,7 +61,15 @@ Vue.component('el-aside', Aside)
 Vue.component('el-main', Main)
 Vue.component('el-header', Header)
 Vue.component('el-col', Col)
+Vue.component('el-input', Input)
+Vue.component('el-button', Button)
+Vue.component('el-button-group', ButtonGroup)
+Vue.component('el-option', Option)
+Vue.component('el-select', Select)
 Vue.component('el-row', Row)
+Vue.component('el-form', Form)
+Vue.component('el-form-item', FormItem)
+Vue.component('el-dialog', Dialog)
 Vue.component('el-dropdown', Dropdown)
 Vue.component('el-dropdown-item', DropdownItem)
 Vue.component('el-dropdown-menu', DropdownMenu)

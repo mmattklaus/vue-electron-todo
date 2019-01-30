@@ -10,3 +10,4 @@ thumbs.db
 !.gitkeep
 .idea/*
 .phpintel/*
+static/boards
